@@ -1,0 +1,26 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "outDir": "temp",
+    "target": "ESNext",
+    "module": "ESNext",
+    "lib": ["DOM"],
+    "strict": true,
+    "paths": {
+      "@chibivue/*": ["./packages/*/src"],
+      "chibivue": ["./packages/chibivue/src"],
+      // extensions
+      "chibivue-store": ["./packages/@extensions/chibivue-store/src"],
+      "chibivue-router": ["./packages/@extensions/chibivue-router/src"],
+      "vite-plugin-chibivue": [
+        "./packages/@extensions/vite-plugin-chibivue/src"
+      ]
+    },
+    "types": ["vitest/importMeta"],
+    "moduleResolution": "Bundler",
+    "allowJs": true,
+    "esModuleInterop": true
+  },
+  "include": ["packages/**/*.ts", "examples/**/**.ts", "examples/**/**.vue"],
+  "exclude": ["./**/node_modules", "./**/dist"]
+}

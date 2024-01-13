@@ -1,0 +1,79 @@
+name: Deploy chibivue Book to Pages
+
+on:
+  push:
+    branches: [main]
+
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Check if it's the original repo and the main branch
+        run: |
+          if [[ "${{ github.repository }}" == "Ubugeeei/chibivue" && "${{ github.ref }}" == "refs/heads/main" ]]; then
+            echo "This is the original repo's main branch, running the workflow."
+          else
+            echo "This is a fork or a different branch, skipping the workflow."
+            exit 0
+          fi
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+      - uses: pnpm/action-setup@v2
+        name: Install pnpm
+        with:
+          version: 8
+          run_install: false
+      - name: Get pnpm store directory
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+      - uses: actions/cache@v3
+        name: Setup pnpm cache
+        with:
+          path: ${{ env.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+      - name: Setup Pages
+        uses: actions/configure-pages@v3
+      - name: Install dependencies
+        run: pnpm install
+      - name: Build with VitePress
+        run: pnpm run book:build
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v2
+        with:
+          path: book/online-book/.vitepress/dist
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v2
+
+  notify:
+    runs-on: ubuntu-latest
+    needs: deploy
+    steps:
+      - name: notify
+        run: |
+          curl -H 'Content-Type:application/json' "${{secrets.DISCORD_WEBHOOK_URL}}" -d '{"content": "Deployed Online Book!\n ${{ github.event.repository.url }}/actions/runs/${{ github.run_id }}"}'

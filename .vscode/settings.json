@@ -1,0 +1,40 @@
+{
+  "cSpell.words": [
+    "antfu",
+    "augmentor",
+    "chainsi",
+    "chibi",
+    "chibivue",
+    "citty",
+    "consola",
+    "deduped",
+    "deindent",
+    "estree",
+    "fizzbuzz",
+    "hyperscript",
+    "jiti",
+    "klass",
+    "lightningcss",
+    "nocheck",
+    "paren",
+    "Parens",
+    "RAWTEXT",
+    "RCDATA",
+    "textlint",
+    "tokei",
+    "unref",
+    "vdom",
+    "vitepress",
+    "vnode",
+    "Vnodes",
+    "vuejs"
+  ],
+  "material-icon-theme.folders.associations": {
+    "book": "resource",
+    "impls": "vue",
+    "online-book": "vuepress",
+    "vuejs-core": "vue",
+    "@extensions": "lib"
+  },
+  "material-icon-theme.files.associations": {}
+}
